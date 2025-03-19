@@ -8,6 +8,10 @@ ref: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_colors/Relative_colors
 DEFAULT_COLOR = "lime"
 
 
+def _clip(value: float, min_value: float, max_value: float) -> float:
+    return min(max_value, max(min_value, value))
+
+
 def get_color(color: str, _path=None) -> str:
     """Get the referenced theme color as necessary
     This is recursive, so it allows theme colors to reference each other which
@@ -51,7 +55,7 @@ def get_color(color: str, _path=None) -> str:
 def set_alpha(color: str, alpha: float) -> str:
     """Set the alpha channel for the color"""
     color = get_color(color)
-    return f"rgb(from {color} r g b / {alpha})"
+    return f"rgb(from {color} r g b / {_clip(alpha, 0, 1)})"
 
 
 def hue_rotate(color: str, angle: float) -> str:
@@ -63,13 +67,13 @@ def hue_rotate(color: str, angle: float) -> str:
 def set_lightness(color: str, lightness: float) -> str:
     """Set the LCH lightness channel"""
     color = get_color(color)
-    return f"lch(from {color} {lightness} c h)"
+    return f"hsl(from {color} h s {_clip(lightness, 0, 100)})"
 
 
 def shift_lightness(color: str, lightness_shift: float) -> str:
     """Shift the LCH lightness channel"""
     color = get_color(color)
-    return f"lch(from {color} calc(l + {lightness_shift}) c h)"
+    return f"hsl(from {color} h s calc(l + {_clip(lightness_shift, -100, 100)}))"
 
 
 class Color:
