@@ -1,0 +1,52 @@
+components:
+- components:
+  - components:
+    - name: button_10
+      properties: {text: DEFAULT_COLOR}
+      type: Button
+    - name: button_1
+      properties: {text: 'theme:Red'}
+      type: Button
+    - layout_properties: {}
+      name: button_2
+      properties: {text: 'theme:MyColor'}
+      type: Button
+    - name: button_3
+      properties: {background: '', text: 'theme:missing'}
+      type: Button
+    - name: button_4
+      properties: {text: Transparent}
+      type: Button
+    - name: button_5
+      properties: {text: hue rotate + 120}
+      type: Button
+    - name: button_6
+      properties: {text: set lightness}
+      type: Button
+    - name: button_7
+      properties: {text: shift lightness}
+      type: Button
+    - name: button_8
+      properties: {text: MIX}
+      type: Button
+    - layout_properties: {}
+      name: button_9
+      properties: {text: Circular Reference}
+      type: Button
+    layout_properties: {grid_position: 'UFIHVN,BFVOFF'}
+    name: flow_panel_1
+    properties: {}
+    type: FlowPanel
+  - event_bindings: {reset: canvas_1_reset}
+    layout_properties: {grid_position: 'REYSXO,ECCOFM'}
+    name: canvas_1
+    properties: {height: 294}
+    type: Canvas
+  layout_properties: {slot: default}
+  name: content_panel
+  properties: {}
+  type: ColumnPanel
+container:
+  properties: {html: '@theme:standard-page.html'}
+  type: HtmlTemplate
+is_package: true

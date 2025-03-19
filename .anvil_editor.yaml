@@ -1,8 +1,11 @@
 unique_ids:
   assets:
+    color_management.png: '1742416115308166382807398.9373'
     standard-page.html: NYXYFBO55MR5EJSY7B4RWLRMGT2DZXZH
     theme.css: MT43BTHTM5Y73CD55WMWU4RTI7II77U7
-  forms: {}
-  modules: {}
+  forms:
+    _color_test: '1742416760780834437361696.1371'
+  modules:
+    color_management: '1742416207478853222261336.0925'
   scripts: {}
   server_modules: {}

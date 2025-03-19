@@ -1,1 +1,8 @@
+color_scheme:
+  colors:
+  - {color: '#F00', name: Red}
+  - {color: 'theme:Red', name: MyColor}
+  - {color: 'theme:Circular_B', name: Circular_A}
+  - {color: 'theme:Circular_A', name: Circular_B}
+  preset_groups: []
 roles: []
