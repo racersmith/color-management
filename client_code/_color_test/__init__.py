@@ -1,6 +1,6 @@
 from ._anvil_designer import _color_testTemplate
 
-from .. import color_management as cm
+from .. import cm
 
 
 class _color_test(_color_testTemplate):
@@ -9,14 +9,14 @@ class _color_test(_color_testTemplate):
 
         self.button_10.background = cm.DEFAULT_COLOR
 
-        self.button_1.background = cm.get_color("theme:Red")
+        self.button_1.background = cm.get_color("theme:Green")
 
         self.button_2.background = cm.get_color("theme:MyColor")
 
         self.button_3.background = cm.get_color("theme:missing")
 
-        self.button_4.background = cm.set_alpha("theme:Red", 0.75)
-        self.button_4.foreground = cm.Color("black").set_alpha(0.25)
+        self.button_4.background = cm.set_alpha("theme:Orange", 0.25)
+        self.button_4.foreground = cm.Color("black")
 
         color = "mediumaquamarine"
         self.button_5.background = cm.get_color(color)
@@ -47,10 +47,10 @@ class _color_test(_color_testTemplate):
         c.line_to(200, 200)
         c.close_path()
 
-        triangle_color = cm.Color("#2196F3")
-        c.stroke_style = triangle_color.shift_lightness(-20)
+        triangle_color = cm.Color("theme:Green")
+        c.stroke_style = triangle_color.shift_lightness(-20).shift_saturation(10)
         c.line_width = 3
-        c.fill_style = triangle_color.set_lightness(80)
+        c.fill_style = triangle_color.set_lightness(80).shift_saturation(-30)
 
         c.fill()
         c.stroke()
@@ -70,9 +70,10 @@ class _color_test(_color_testTemplate):
         c.stroke()
 
         # Set the stroke and fill styles
-        c.stroke_style = cm.Color("#2196F3").set_lightness(20)
+        color = cm.Color("theme:Orange")
+        c.stroke_style = color.set_lightness(20)
         c.line_width = 3
-        c.fill_style = cm.Color("#2196F3").set_lightness(80)
+        c.fill_style = color.set_lightness(80)
 
         # Draw a filled rectangle
         c.fill_rect(300, 100, 50, 75)

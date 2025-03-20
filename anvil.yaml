@@ -1,7 +1,7 @@
 allow_embedding: false
-metadata: {logo_img: 'asset:color_management.png'}
-name: Color Managment
-package_name: Color_Managment
+metadata: {description: Consistent access and adjustment to colors, logo_img: 'asset:color_management.png', title: Color Management}
+name: Color Management
+package_name: color_management
 runtime_options:
   client_version: '3'
   server_spec: {base: python310-minimal}

@@ -4,8 +4,9 @@ components:
     - name: button_10
       properties: {text: DEFAULT_COLOR}
       type: Button
-    - name: button_1
-      properties: {text: 'theme:Red'}
+    - layout_properties: {}
+      name: button_1
+      properties: {text: 'theme:Green'}
       type: Button
     - layout_properties: {}
       name: button_2

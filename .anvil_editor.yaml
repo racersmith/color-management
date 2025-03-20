@@ -6,6 +6,6 @@ unique_ids:
   forms:
     _color_test: '1742416760780834437361696.1371'
   modules:
-    color_management: '1742416207478853222261336.0925'
+    cm: '1742416207478853222261336.0925'
   scripts: {}
   server_modules: {}

@@ -9,6 +9,7 @@ DEFAULT_COLOR = "lime"
 
 
 def _clip(value: float, min_value: float, max_value: float) -> float:
+    """Keep the value with in the min and max range"""
     return min(max_value, max(min_value, value))
 
 
@@ -65,15 +66,25 @@ def hue_rotate(color: str, angle: float) -> str:
 
 
 def set_lightness(color: str, lightness: float) -> str:
-    """Set the LCH lightness channel"""
+    """Set the HSL lightness channel"""
     color = get_color(color)
     return f"hsl(from {color} h s {_clip(lightness, 0, 100)})"
 
 
 def shift_lightness(color: str, lightness_shift: float) -> str:
-    """Shift the LCH lightness channel"""
+    """Shift the HSL lightness channel"""
     color = get_color(color)
     return f"hsl(from {color} h s calc(l + {_clip(lightness_shift, -100, 100)}))"
+
+
+def set_saturation(color: str, saturation: float) -> str:
+    """Set the saturation of the HSL color"""
+    return f"hsl(from {color} h {_clip(saturation, 0, 100)} l)"
+
+
+def shift_saturation(color: str, saturation: float) -> str:
+    """Shift the saturation of the HSL color"""
+    return f"hsl(from {color} h calc(s + {_clip(saturation, -100, 100)}) l)"
 
 
 class Color:
@@ -81,18 +92,31 @@ class Color:
         self.name = color
         self.color = get_color(color)
 
+    def __repr__(self) -> str:
+        return f"Color: {self.name}"
+
     def __str__(self) -> str:
         """ Get the color string on demand """
         return self.color
 
     def set_alpha(self, lightness: float):
+        """Set the opacity of the color using the alpha channel"""
         return Color(set_alpha(self.color, lightness))
 
     def set_lightness(self, lightness: float):
+        """Override the lightness of the color in HSL space"""
         return Color(set_lightness(self.color, lightness))
 
     def shift_lightness(self, lightness_shift: float):
+        """Adjust the lightness of the color"""
         return Color(shift_lightness(self.color, lightness_shift))
 
     def hue_rotate(self, angle: float):
+        """Rotate the hue of the color in HSL space"""
         return Color(hue_rotate(self.color, angle))
+
+    def set_saturation(self, saturation: float):
+        return Color(set_saturation(self.color, saturation))
+
+    def shift_saturation(self, saturation_shift: float):
+        return Color(shift_saturation(self.color, saturation_shift))
