@@ -2,41 +2,72 @@ from ._anvil_designer import _color_testTemplate
 
 from .. import cm
 
+from anvil import Button
+from anvil import app
+
 
 class _color_test(_color_testTemplate):
     def __init__(self, **properties):
         self.init_components(**properties)
 
-        self.button_10.background = cm.DEFAULT_COLOR
+        for color_name, color_value in app.theme_colors.items():
+            theme_color = f"theme:{color_name}"
+            self.add_button(
+                button_color=cm.Color(theme_color), 
+                text_color=cm.Color("black")
+            )
 
-        self.button_1.background = cm.get_color("theme:Green")
-
-        self.button_2.background = cm.get_color("theme:MyColor")
-
-        self.button_3.background = cm.get_color("theme:missing")
-
-        self.button_4.background = cm.set_alpha("theme:Orange", 0.25)
-        self.button_4.foreground = cm.Color("black")
-
-        color = "mediumaquamarine"
-        self.button_5.background = cm.get_color(color)
-        rotate = 180 - 30
-        self.button_5.text = f"hue rotate {rotate:+}"
-        self.button_5.foreground = cm.hue_rotate(color, rotate)
-
-        self.button_6.background = cm.Color("lightblue").set_lightness(20)
-        self.button_6.foreground = cm.set_lightness("lightblue", 80)
-
-        self.button_7.background = cm.Color("lightblue").shift_lightness(5)
-        self.button_7.foreground = cm.shift_lightness("lightblue", -50)
-
-        color = "darkcyan"
-        self.button_8.background = (
-            cm.Color(color).shift_lightness(-10).set_alpha(55).hue_rotate(30)
+        self.add_button(
+            button_color=cm.DEFAULT_COLOR, 
+            text_color="black", 
+            text="DEFAULT_COLOR"
         )
-        self.button_8.foreground = cm.Color(color)
+        
+        self.add_button(
+            button_color=cm.Color("theme:missing"), 
+            text_color=cm.Color("black")
+        )
+        
+        self.add_button(
+            button_color=cm.Color("theme:Orange").set_alpha(0.5),
+            text_color=cm.Color("black"),
+        )
 
-        self.button_9.background = cm.Color("theme:Circular_A")
+        color = cm.Color("mediumaquamarine")
+        self.add_button(
+            button_color=color.hue_rotate(180), 
+            text_color=color.shift_lightness(+25)
+        )
+
+        color = cm.Color("lightblue")
+        self.add_button(
+            button_color=color, 
+            text_color=color.set_lightness(10)
+        )
+
+        color = cm.Color("lightblue")
+        self.add_button(
+            button_color=color.set_lightness(20), 
+            text_color=color.set_lightness(80)
+        )
+
+        color = cm.Color("lightblue")
+        self.add_button(
+            button_color=color.shift_lightness(-30),
+            text_color=color.shift_lightness(30),
+        )
+
+        color = cm.Color("darkcyan")
+        self.add_button(
+            button_color=color.shift_lightness(-10).set_alpha(60).hue_rotate(30),
+            text_color=color,
+        )
+
+    def add_button(self, button_color, text_color, text=None):
+        if text is None:
+            text = button_color.info
+        button = Button(text=text, background=button_color, foreground=text_color)
+        self.flow_panel_1.add_component(button)
 
     def canvas_1_reset(self, **event_args):
         """This method is called when the canvas is reset and cleared, such as when the window resizes, or the canvas is added to a form."""

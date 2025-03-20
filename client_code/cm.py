@@ -88,35 +88,49 @@ def shift_saturation(color: str, saturation: float) -> str:
 
 
 class Color:
-    def __init__(self, color: str):
-        self.name = color
+    def __init__(self, color: str, _info=None):
         self.color = get_color(color)
 
-    def __repr__(self) -> str:
-        return f"Color: {self.name}"
+        self._info = _info
+        if self._info is None:
+            self._info = [color]
+
+    @property
+    def info(self) -> str:
+        """Provide a nice representation of the color"""
+        return f"Color: {', '.join(self._info)}"
 
     def __str__(self) -> str:
-        """ Get the color string on demand """
+        """Get the color string on demand"""
         return self.color
 
-    def set_alpha(self, lightness: float):
+    def _extend_info(self, attribute):
+        return self._info + [attribute]
+    
+    def set_alpha(self, alpha: float):
         """Set the opacity of the color using the alpha channel"""
-        return Color(set_alpha(self.color, lightness))
+        _info = self._extend_info(f"alpha={alpha:.0f}")
+        return Color(set_alpha(self.color, alpha), _info=_info)
 
     def set_lightness(self, lightness: float):
         """Override the lightness of the color in HSL space"""
-        return Color(set_lightness(self.color, lightness))
+        _info = self._extend_info(f"lightness={lightness:.0f}")
+        return Color(set_lightness(self.color, lightness), _info=_info)
 
     def shift_lightness(self, lightness_shift: float):
         """Adjust the lightness of the color"""
-        return Color(shift_lightness(self.color, lightness_shift))
+        _info = self._extend_info(f"lightness {lightness_shift:+.0f}")
+        return Color(shift_lightness(self.color, lightness_shift), _info=_info)
 
     def hue_rotate(self, angle: float):
         """Rotate the hue of the color in HSL space"""
-        return Color(hue_rotate(self.color, angle))
+        _info = self._extend_info(f"hue rotate {angle:+.0f}")
+        return Color(hue_rotate(self.color, angle), _info=_info)
 
     def set_saturation(self, saturation: float):
-        return Color(set_saturation(self.color, saturation))
+        _info = self._extend_info(f"saturation={saturation:.0f}")
+        return Color(set_saturation(self.color, saturation), _info=_info)
 
     def shift_saturation(self, saturation_shift: float):
-        return Color(shift_saturation(self.color, saturation_shift))
+        _info = self._extend_info(f"saturation {saturation_shift:+.0f}")
+        return Color(shift_saturation(self.color, saturation_shift), _info=_info)
