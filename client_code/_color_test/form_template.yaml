@@ -1,5 +1,9 @@
 components:
 - components:
+  - layout_properties: {grid_position: 'OVMXVF,FSXODG'}
+    name: label_1
+    properties: {align: center, bold: true, text: Use the develop branch for viewing demo.}
+    type: Label
   - components: []
     layout_properties: {grid_position: 'UFIHVN,BFVOFF'}
     name: flow_panel_1
