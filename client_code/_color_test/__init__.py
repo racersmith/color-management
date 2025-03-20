@@ -10,6 +10,11 @@ class _color_test(_color_testTemplate):
     def __init__(self, **properties):
         self.init_components(**properties)
 
+        # This component has the color set to a referenced theme color theme:MyColor -> theme:Green -> #96D9D9
+        # This is really useful for custom components, allowing color selection in the designer
+        self.canvas_2.background = cm.Color(self.canvas_2.background)
+
+        # Show the theme colors
         for color_name, color_value in app.theme_colors.items():
             theme_color = f"theme:{color_name}"
             self.add_button(
@@ -17,46 +22,64 @@ class _color_test(_color_testTemplate):
                 text_color=cm.Color("black")
             )
 
+        # Default color when there is an issue
         self.add_button(
             button_color=cm.DEFAULT_COLOR, 
             text_color="black", 
             text="DEFAULT_COLOR"
         )
-        
+
+        # Like a requested color that does not exist in the theme
+        # This will give you a warning in the console.
         self.add_button(
             button_color=cm.Color("theme:missing"), 
             text_color=cm.Color("black")
         )
-        
+
+        # You can adjust transparency
         self.add_button(
             button_color=cm.Color("theme:Orange").set_alpha(0.5),
             text_color=cm.Color("black"),
         )
 
-        color = cm.Color("mediumaquamarine")
+        # Works with Hex colors, give complementry color by hue rotate
+        color = cm.Color("#E9D758")
         self.add_button(
             button_color=color.hue_rotate(180), 
-            text_color=color.shift_lightness(+25)
+            text_color=color
         )
 
+        # Play around with lightblue
         color = cm.Color("lightblue")
         self.add_button(
             button_color=color, 
             text_color=color.set_lightness(10)
         )
 
+        # Set specific lightness values
         color = cm.Color("lightblue")
         self.add_button(
             button_color=color.set_lightness(20), 
             text_color=color.set_lightness(80)
         )
 
-        color = cm.Color("lightblue")
+        # adjust the lightness values
         self.add_button(
             button_color=color.shift_lightness(-30),
             text_color=color.shift_lightness(30),
         )
 
+        self.add_button(
+            button_color=color.shift_lightness(-30),
+            text_color=color.shift_lightness(30),
+        )
+
+        self.add_button(
+            button_color=color.shift_saturation(35),
+            text_color=cm.Color('black'),
+        )
+
+        # combine multiple color adjustments
         color = cm.Color("darkcyan")
         self.add_button(
             button_color=color.shift_lightness(-10).set_alpha(60).hue_rotate(30),
@@ -70,7 +93,7 @@ class _color_test(_color_testTemplate):
         self.flow_panel_1.add_component(button)
 
     def canvas_1_reset(self, **event_args):
-        """This method is called when the canvas is reset and cleared, such as when the window resizes, or the canvas is added to a form."""
+        """ cm.Color works in canvas as well """
         c = self.canvas_1
         c.begin_path()
         c.move_to(100, 100)
@@ -115,3 +138,9 @@ class _color_test(_color_testTemplate):
 
         # Draw a rectangle outline 25 pixels right of it
         c.stroke_rect(325, 100, 50, 75)
+
+        c.fill_style = cm.Color("theme:missing").set_alpha(0.5)
+        c.begin_path()
+        c.arc(190, 200, 50)
+        c.close_path()
+        c.fill()
