@@ -69,13 +69,15 @@ class _color_test(_color_testTemplate):
             text_color=color.shift_lightness(30),
         )
 
-        self.add_button(
-            button_color=color.shift_lightness(-30),
-            text_color=color.shift_lightness(30),
-        )
-
+        # shift the saturation
         self.add_button(
             button_color=color.shift_saturation(35),
+            text_color=cm.Color('black'),
+        )
+
+        # Set transparency
+        self.add_button(
+            button_color=color.set_alpha(0.25),
             text_color=cm.Color('black'),
         )
 

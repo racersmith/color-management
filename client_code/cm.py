@@ -31,7 +31,7 @@ def get_color(color: str, _path=None) -> str:
 
         # Handle circular references
         if color in _path:
-            print(f"Warning: Circular Reference in theme colors {_path}")
+            print(f"Warning: Circular Reference in theme colors {_path}. Using default color '{DEFAULT_COLOR}'")
             return DEFAULT_COLOR
         else:
             _path.add(color)
