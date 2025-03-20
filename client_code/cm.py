@@ -108,6 +108,10 @@ class Color:
         """Provide a nice representation of the color"""
         return self.info
 
+    def __call__(self) -> str:
+        """ Force the CSS representation of the color """
+        return self.__str__()
+
     def _extend_info(self, attribute):
         return self._info + [attribute]
     
