@@ -89,11 +89,14 @@ def shift_saturation(color: str, saturation: float) -> str:
 
 class Color:
     def __init__(self, color: str, _info=None):
-        self.color = get_color(color)
+        if isinstance(color, self.__class__):
+            self.__dict__.update(color.__dict__)
+        else:
+            self.color = get_color(color)
 
-        self._info = _info
-        if self._info is None:
-            self._info = [color]
+            self._info = _info
+            if self._info is None:
+                self._info = [color]
 
     @property
     def info(self) -> str:

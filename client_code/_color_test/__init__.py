@@ -22,6 +22,13 @@ class _color_test(_color_testTemplate):
                 text_color=cm.Color("black")
             )
 
+        # Color instance as the color
+        color = cm.Color('blue')
+        self.add_button(
+            button_color=cm.Color(color),
+            text_color=cm.Color("white")
+        )
+        
         # Default color when there is an issue
         self.add_button(
             button_color=cm.DEFAULT_COLOR, 
