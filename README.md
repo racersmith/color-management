@@ -1,3 +1,7 @@
+<p align="center">
+    <img alt="image" src="theme/assets/color_management.png" width="128"/>
+</p>
+
 # Color Management
 Simple to use color mangement dependency for use in [Anvil](https://anvil.works/) apps.
 
@@ -22,12 +26,14 @@ I keep finding myself writing a dumb function, or importing the `theme_color_to_
 
 ## Consistent Usage
 As long as you have something that is CSS compatible, things should just work.
-`cm.Color("red") -> "red"`
-`cm.Color("#F00") -> "#F00"`
-`cm.Color("theme:Green") -> #96D9D9 # in this example`
-`cm.Color("rgb(255 121 1") -> "rgb(255 121 1"`
-`cm.Color(component.background) -> color from component`
-
+``` python
+cm.Color("red") -> "red"
+cm.Color("#F00") -> "#F00"
+cm.Color("theme:Green") -> "#96D9D9" # in this example
+cm.Color("rgb(255 121 1") -> "rgb(255 121 1"
+cm.Color(component.background) -> <color_from_component>
+cm.Color(cm.Color("red")) -> "red"
+```
 
 ## Theme color reference
 Allow theme colors to reference another theme color.  This is done recursively, so reference can be arbitrarily deep as long as there is no circular reference, in which case, a warning is given and the default color is returned.  I find this helpful to allow theme colors to be added that are more descriptive but still reference the current color scheme.  ie. `theme:canvas_background = theme:Primary`.
