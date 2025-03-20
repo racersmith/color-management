@@ -92,7 +92,7 @@ class Color:
         if isinstance(color, self.__class__):
             self.__dict__.update(color.__dict__)
         else:
-            self.color = get_color(color)
+            self._color = get_color(color)
 
             self._info = _info
             if self._info is None:
@@ -105,15 +105,22 @@ class Color:
 
     def __str__(self) -> str:
         """Get the color string on demand"""
-        return self.color
+        return str(self._color)
 
     def __repr__(self) -> str:
         """Provide a nice representation of the color"""
         return self.info
 
-    def __call__(self) -> str:
-        """ Force the CSS representation of the color """
+    @property
+    def color(self) -> str:
+        """ Get the CSS representation of the color
+        Useful in cases where the string representation is not requested automatically
+        """
         return self.__str__()
+    
+    def __call__(self) -> str:
+        """ Force the CSS representation of the color, alias of .color """
+        return self.color
 
     def _extend_info(self, attribute):
         return self._info + [attribute]
@@ -124,7 +131,7 @@ class Color:
             alpha: alpha value between 0 and 1
         """
         _info = self._extend_info(f"alpha={alpha:.2f}")
-        return Color(set_alpha(self.color, alpha), _info=_info)
+        return Color(set_alpha(self._color, alpha), _info=_info)
 
     def set_lightness(self, lightness: float):
         """Override the lightness of the color in HSL space
@@ -132,7 +139,7 @@ class Color:
             lightness: lightness value between 0 (black) and 100 (white)
         """
         _info = self._extend_info(f"lightness={lightness:.0f}")
-        return Color(set_lightness(self.color, lightness), _info=_info)
+        return Color(set_lightness(self._color, lightness), _info=_info)
 
     def shift_lightness(self, lightness_shift: float):
         """Adjust the lightness of the color
@@ -140,7 +147,7 @@ class Color:
             lightness_shift: adjustment from current lightness value +/- 100
         """
         _info = self._extend_info(f"lightness: {lightness_shift:+.0f}")
-        return Color(shift_lightness(self.color, lightness_shift), _info=_info)
+        return Color(shift_lightness(self._color, lightness_shift), _info=_info)
 
     def hue_rotate(self, angle: float):
         """Rotate the hue of the color in HSL space
@@ -149,7 +156,7 @@ class Color:
         """
         angle = angle%360
         _info = self._extend_info(f"hue rotate: {angle:+.0f}")
-        return Color(hue_rotate(self.color, angle), _info=_info)
+        return Color(hue_rotate(self._color, angle), _info=_info)
 
     def set_saturation(self, saturation: float):
         """ Set a the saturation value of the color
@@ -157,7 +164,7 @@ class Color:
             saturation: HSL Saturation value 0-100
         """
         _info = self._extend_info(f"saturation={saturation:.0f}")
-        return Color(set_saturation(self.color, saturation), _info=_info)
+        return Color(set_saturation(self._color, saturation), _info=_info)
 
     def shift_saturation(self, saturation_shift: float):
         """ Shift the saturation value in the HSL space
@@ -165,4 +172,4 @@ class Color:
             saturation_shift: amount to shif the saturation +/- 100
         """
         _info = self._extend_info(f"saturation: {saturation_shift:+.0f}")
-        return Color(shift_saturation(self.color, saturation_shift), _info=_info)
+        return Color(shift_saturation(self._color, saturation_shift), _info=_info)
