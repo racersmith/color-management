@@ -1,6 +1,5 @@
 from anvil import app, TextBox
 from anvil.js import get_dom_node
-from anvil.js import window
 
 """ Taking advantage of CSS color functions 
 ref: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_colors/Relative_colors
@@ -8,20 +7,20 @@ ref: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_colors/Relative_colors
 
 
 DEFAULT_COLOR = "lime"
+
+
 _TB = TextBox()
 _TB_NODE = get_dom_node(_TB)
 
-
 def get_color_var(color: str) -> str:
-    """Get the referenced theme color as necessary
-    This is recursive, so it allows theme colors to reference each other which
-    allows for more descriptive theme color names.  Downside is the color does not resolve
-    in the Color Scheme view.
+    """ Get the actual variable of a theme color
+    This allows theme colors to be updated dynamically in client code
 
-    Args:
-        color: either a color value ie. hex, rgb, etc. or a referenced theme color in the form 'theme:Color'
+    Thanks to @stucork for this!
 
-    Returns the first resolved color value that is not a theme color reference.
+    in the running app console:
+    >>> from anvil import app
+    >>> app.theme_colors['MyColor'] = 'Red'
     """
     _TB.foreground = color
     return _TB_NODE.style.color
@@ -32,7 +31,7 @@ def _clip(value: float, min_value: float, max_value: float) -> float:
     return min(max_value, max(min_value, value))
 
 
-def get_color(color: str, _path=None) -> str:
+def get_color(color: str, _path=None) -> (str, str):
     """Get the referenced theme color as necessary
     This is recursive, so it allows theme colors to reference each other which
     allows for more descriptive theme color names.  Downside is the color does not resolve
@@ -51,7 +50,7 @@ def get_color(color: str, _path=None) -> str:
         # Handle circular references
         if color in _path:
             print(f"Warning: Circular Reference in theme colors {_path}. Using default color '{DEFAULT_COLOR}'")
-            return DEFAULT_COLOR
+            return DEFAULT_COLOR, DEFAULT_COLOR
         else:
             _path.append(color)
 
@@ -63,39 +62,39 @@ def get_color(color: str, _path=None) -> str:
             print(
                 f"Warning: Theme color '{color}' not found. Using default color '{DEFAULT_COLOR}'"
             )
-            return DEFAULT_COLOR
+            return DEFAULT_COLOR, DEFAULT_COLOR
 
         # Dive to the next level
         return get_color(next_color, _path=_path)
     else:
         # Color is resolved, well done everyone.
         if _path:
-            return get_color_var(_path[-1])
+            return color, get_color_var(_path[0])
         else:
-            return color
+            return color, color
 
 
 def set_alpha(color: str, alpha: float) -> str:
     """Set the alpha channel for the color"""
-    color = get_color(color)
+    # color = get_color(color)
     return f"rgb(from {color} r g b / {_clip(alpha, 0, 1)})"
 
 
 def hue_rotate(color: str, angle: float) -> str:
     """Rotate the HSL hue by the given angle"""
-    color = get_color(color)
+    # color = get_color(color)
     return f"hsl(from {color} calc(h + {angle % 360}) s l)"
 
 
 def set_lightness(color: str, lightness: float) -> str:
     """Set the HSL lightness channel"""
-    color = get_color(color)
+    # color = get_color(color)
     return f"hsl(from {color} h s {_clip(lightness, 0, 100)})"
 
 
 def shift_lightness(color: str, lightness_shift: float) -> str:
     """Shift the HSL lightness channel"""
-    color = get_color(color)
+    # color = get_color(color)
     return f"hsl(from {color} h s calc(l + {_clip(lightness_shift, -100, 100)}))"
 
 
@@ -114,7 +113,7 @@ class Color:
         if isinstance(color, self.__class__):
             self.__dict__.update(color.__dict__)
         else:
-            self._color = get_color(color)
+            self._color, self._color_var = get_color(color)
 
             self._info = _info
             if self._info is None:
@@ -127,7 +126,7 @@ class Color:
 
     def __str__(self) -> str:
         """Get the color string on demand"""
-        return str(self._color)
+        return str(self._color_var)
 
     def __repr__(self) -> str:
         """Provide a nice representation of the color"""
@@ -138,7 +137,7 @@ class Color:
         """ Get the CSS representation of the color
         Useful in cases where the string representation is not requested automatically
         """
-        return self.__str__()
+        return self._color
     
     def __call__(self) -> str:
         """ Force the CSS representation of the color, alias of .color """
