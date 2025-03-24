@@ -1,4 +1,6 @@
-from anvil import app
+from anvil import app, TextBox
+from anvil.js import get_dom_node
+from anvil.js import window
 
 """ Taking advantage of CSS color functions 
 ref: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_colors/Relative_colors
@@ -6,6 +8,23 @@ ref: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_colors/Relative_colors
 
 
 DEFAULT_COLOR = "lime"
+_TB = TextBox()
+_TB_NODE = get_dom_node(_TB)
+
+
+def get_color_var(color: str) -> str:
+    """Get the referenced theme color as necessary
+    This is recursive, so it allows theme colors to reference each other which
+    allows for more descriptive theme color names.  Downside is the color does not resolve
+    in the Color Scheme view.
+
+    Args:
+        color: either a color value ie. hex, rgb, etc. or a referenced theme color in the form 'theme:Color'
+
+    Returns the first resolved color value that is not a theme color reference.
+    """
+    _TB.foreground = color
+    return _TB_NODE.style.color
 
 
 def _clip(value: float, min_value: float, max_value: float) -> float:
@@ -27,14 +46,14 @@ def get_color(color: str, _path=None) -> str:
 
     if color.startswith("theme:"):
         if _path is None:
-            _path = set()
+            _path = list()
 
         # Handle circular references
         if color in _path:
             print(f"Warning: Circular Reference in theme colors {_path}. Using default color '{DEFAULT_COLOR}'")
             return DEFAULT_COLOR
         else:
-            _path.add(color)
+            _path.append(color)
 
         # Get the referenced theme color
         next_color = app.theme_colors.get(color.lstrip("theme:"), None)
@@ -50,7 +69,10 @@ def get_color(color: str, _path=None) -> str:
         return get_color(next_color, _path=_path)
     else:
         # Color is resolved, well done everyone.
-        return color
+        if _path:
+            return get_color_var(_path[-1])
+        else:
+            return color
 
 
 def set_alpha(color: str, alpha: float) -> str:
