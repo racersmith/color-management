@@ -1,5 +1,6 @@
 from anvil import app, TextBox
 from anvil.js import get_dom_node
+from anvil.js import window, document
 
 """ Taking advantage of CSS color functions 
 ref: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_colors/Relative_colors
@@ -50,7 +51,7 @@ def get_color(color: str, _path=None) -> (str, str):
         # Handle circular references
         if color in _path:
             print(f"Warning: Circular Reference in theme colors {_path}. Using default color '{DEFAULT_COLOR}'")
-            return DEFAULT_COLOR, DEFAULT_COLOR
+            return DEFAULT_COLOR
         else:
             _path.append(color)
 
@@ -62,16 +63,21 @@ def get_color(color: str, _path=None) -> (str, str):
             print(
                 f"Warning: Theme color '{color}' not found. Using default color '{DEFAULT_COLOR}'"
             )
-            return DEFAULT_COLOR, DEFAULT_COLOR
+            return DEFAULT_COLOR
 
         # Dive to the next level
         return get_color(next_color, _path=_path)
     else:
         # Color is resolved, well done everyone.
         if _path:
-            return color, get_color_var(_path[0])
+            return get_color_var(_path[0])
         else:
-            return color, color
+            return color
+
+
+def _resolove_var_to_color(color: str):
+    document.body.style.setProperty("--color-management-root", color)
+    return window.getComputedStyle(document.body).getPropertyValue("--color-management-root")
 
 
 def set_alpha(color: str, alpha: float) -> str:
@@ -113,7 +119,7 @@ class Color:
         if isinstance(color, self.__class__):
             self.__dict__.update(color.__dict__)
         else:
-            self._color, self._color_var = get_color(color)
+            self._color = get_color(color)
 
             self._info = _info
             if self._info is None:
@@ -126,7 +132,7 @@ class Color:
 
     def __str__(self) -> str:
         """Get the color string on demand"""
-        return str(self._color_var)
+        return str(self._color)
 
     def __repr__(self) -> str:
         """Provide a nice representation of the color"""
@@ -137,7 +143,7 @@ class Color:
         """ Get the CSS representation of the color
         Useful in cases where the string representation is not requested automatically
         """
-        return self._color
+        return _resolove_var_to_color(self._color)
     
     def __call__(self) -> str:
         """ Force the CSS representation of the color, alias of .color """
