@@ -72,7 +72,7 @@ def get_color(color: str, _path=None) -> (str, str):
         if _path:
             return get_color_var(_path[0])
         else:
-            return color
+            return get_color_var(color)
 
 
 def _resolove_var_to_color(color: str):
@@ -132,7 +132,7 @@ class Color:
 
     def __str__(self) -> str:
         """Get the color string on demand"""
-        return str(self._color)
+        return self._color
 
     def __repr__(self) -> str:
         """Provide a nice representation of the color"""
